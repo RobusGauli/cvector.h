@@ -11,7 +11,6 @@
       mem[1] = 0;                                                              \
       *(x) = (void *)(&(mem[2]));                                              \
     }                                                                          \
-                                                                               \
   } while (0);
 
 #define vector__size(x) ((x) ? ((size_t *)(x))[-2] : (size_t)(0))
@@ -47,6 +46,13 @@
     vector__grow(x);                                                           \
     (*(x))[vector__size(*(x))] = val;                                          \
     vector__setsize(*(x), vector__size(*(x)) + 1);                             \
+  } while (0);
+
+#define vector__truncate(x)                                                    \
+  do {                                                                         \
+    vector__free((*(x)));                                                      \
+    (*(x)) = NULL;                                                             \
+    vector__init(x);                                                           \
   } while (0);
 
 typedef struct vector_iterator_t {
