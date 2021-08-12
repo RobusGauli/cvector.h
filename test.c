@@ -228,10 +228,21 @@ void test__vector_truncate() {
   assert(numbers[1] == 200);
 }
 
+void test__vector_init_with_cap() {
+  int* numbers = NULL;
+
+  vector__init_with_cap(&numbers, 5);
+
+  assert(vector__size(numbers) == 0);
+  assert(vector__cap(numbers) == 5);
+
+}
+
 int main() {
   // vector apis
   test__null_vector();
   test__vector_init();
+  test__vector_init_with_cap();
   test__vector_add();
   test__vector_setsize();
   test__vector_setcap();

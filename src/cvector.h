@@ -13,6 +13,16 @@
     }                                                                          \
   } while (0);
 
+#define vector__init_with_cap(x, n)                                            \
+  do {                                                                         \
+    if (*(x) == NULL) {                                                        \
+      size_t *mem = malloc(sizeof(size_t) * 2 + sizeof(**(x)) * (n));          \
+      mem[0] = 0;                                                              \
+      mem[1] = (n);                                                            \
+      *(x) = (void *)(&(mem[2]));                                              \
+    }                                                                          \
+  } while (0);
+
 #define vector__size(x) ((x) ? ((size_t *)(x))[-2] : (size_t)(0))
 
 #define vector__cap(x) ((x) ? ((size_t *)(x))[-1] : 0)
