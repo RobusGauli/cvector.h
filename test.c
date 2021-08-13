@@ -1,4 +1,5 @@
 #include "src/cvector.h"
+#include "src/zero.h"
 
 #include <assert.h>
 
@@ -17,7 +18,6 @@ void test__vector_init() {
 void test__null_vector() {
   char *vector = NULL;
 
-  assert(vector__size(vector) == 0);
   assert(vector__size(vector) == 0);
 
   vector__free(vector);
@@ -229,13 +229,66 @@ void test__vector_truncate() {
 }
 
 void test__vector_init_with_cap() {
-  int* numbers = NULL;
+  int *numbers = NULL;
 
   vector__init_with_cap(&numbers, 5);
 
   assert(vector__size(numbers) == 0);
   assert(vector__cap(numbers) == 5);
+}
 
+void test__null_zero() {
+
+  int *numbers = NULL;
+
+  assert(zero__size(numbers) == 0);
+
+  zero__free(numbers);
+}
+
+void test__zero_init() {
+  int *numbers = NULL;
+  zero__init(&numbers);
+
+  assert(zero__size(numbers) == 0);
+  zero__free(numbers);
+}
+
+void test__zero_loop() {
+  typedef struct {
+    int x;
+    int y;
+  } node_t;
+
+  node_t *nodes = NULL;
+
+  zero__add(node_t *, nodes, ((node_t){.x = 3, .y = 5}));
+  zero__add(node_t *, nodes, ((node_t){.x = 6, .y = 7}));
+
+  {
+    node_t *node = zero__index(nodes, 0);
+    assert(node->x == 3);
+    assert(node->y == 5);
+  }
+
+  {
+    node_t *node = zero__index(nodes, 1);
+    assert(node->x == 6);
+    assert(node->y == 7);
+  }
+
+  {
+    node_t *more_nodes = NULL;
+    for (int i = 0; i < 1000; i++) {
+      zero__add(node_t *, more_nodes, ((node_t){.x = i * i, .y = i * i * i}));
+    }
+
+    for (int i = 0; i < zero__size(more_nodes); i++) {
+      node_t *node = zero__index(more_nodes, i);
+      assert(node->x == i * i);
+      assert(node->y == i * i * i);
+    }
+  }
 }
 
 int main() {
@@ -259,4 +312,9 @@ int main() {
 
   // test with list of string
   test__vector_with_list_string();
+
+  // test zero vector
+  test__null_zero();
+  test__zero_init();
+  test__zero_loop();
 }

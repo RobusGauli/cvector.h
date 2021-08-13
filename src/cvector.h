@@ -3,6 +3,9 @@
 #include <stdlib.h>
 #include <string.h>
 
+#ifndef cvector__h
+#define cvector__h
+
 #define vector__init(x)                                                        \
   do {                                                                         \
     if (*(x) == NULL) {                                                        \
@@ -94,3 +97,5 @@ typedef struct vector_iterator_t {
 
 #define vector_iterator__done(iterator)                                        \
   (((iterator)->current_index) >= vector__size(((iterator)->head)))
+
+#endif /* cvector_h */

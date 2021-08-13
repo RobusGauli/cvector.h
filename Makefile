@@ -1,5 +1,5 @@
 .PHONY: test
 
 test: test.c
-	@$(CC) $^ -o $@
+	@$(CC) $^ -o $@ -g -lm
 	@./$@
