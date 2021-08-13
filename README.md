@@ -1,11 +1,14 @@
 # cvector(1)
 
+  Generic vector implementation with iterator helper in C. Also included <b>copy free</b> implemenation of vector.
 
-  Generic vector implementation with iterator helper in C.
+*** 
+`zero.h` is copy free vector implementation i.e there is no copy when size exceeds capacity.
+***
 
 ## Installation
 
-  It has a single file called `cvector.h`. You can simply copy/paste in your source directory to get started. You can also install via clib (package manager for C).
+  It has a two header files file called `cvector.h` and `zero.h`. You can simply copy/paste in your source directory to get started. You can also install via clib (package manager for C).
 
   With [clib](https://github.com/clibs/clib):
   ```sh
@@ -21,7 +24,7 @@ Vector/List is fundamental data structure for just about anything. Therefore, I 
 
 ### Simple example
 ```c
-#include <cvector.h>
+#include "cvector.h"
 
 int main() {
     // Initialize
@@ -45,7 +48,34 @@ int main() {
 }
 ```
 
+### Example using copy free vector
+
+```
+#include "zero.h"
+
+int main() {
+  // Initialize 
+  int* numbers = NULL;
+
+  // Push number to the list
+  zero__add(numbers, 1);
+  zero__add(numbers, 2);
+
+  // Size of the vector
+  printf("Size is: %ld\n", zero__size(numbers));
+
+  // Iterate over the numbers
+  for (int i = 0; i < zero__size(numbers) i++) {
+      int* number = zero__index(numbers, i)
+      printf("Number: %d\n", *number);
+  }
+}
+
+```
+
 ### With Iterator
+
+NOTE: Iterator is not available for copy free implementation.
 ```c
 #include <cvector.h>
 
