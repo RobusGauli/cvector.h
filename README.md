@@ -4,6 +4,10 @@
 
 *** 
 `zero.h` is copy free vector implementation i.e there is no copy when size exceeds capacity.
+
+## Copy Free Vector Representation (zero.h)
+
+![copy free vector representation](assets/copyfree.png)
 ***
 
 ## Installation
@@ -50,7 +54,7 @@ int main() {
 
 ### Example using copy free vector
 
-```
+```c
 #include "zero.h"
 
 int main() {
