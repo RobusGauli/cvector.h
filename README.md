@@ -2,7 +2,7 @@
 
   Generic vector implementation with iterator helper in C. Also included <b>copy free</b> implemenation of vector.
 
-*** 
+***
 `zero.h` is copy free vector implementation i.e there is no copy when size exceeds capacity.
 
 ## Copy Free Vector Representation (zero.h)
@@ -55,33 +55,54 @@ int main() {
 ### Example using copy free vector
 
 ```c
+#include <assert.h>
+
 #include "zero.h"
 
 int main() {
-  // Initialize 
-  int* numbers = NULL;
 
-  // Push number to the list
-  zero__add(numbers, 1);
-  zero__add(numbers, 2);
+  typedef struct {
+    int x;
+    int y;
+  } node_t;
 
-  // Size of the vector
-  printf("Size is: %ld\n", zero__size(numbers));
+  node_t *nodes = NULL;
 
-  // Iterate over the numbers
-  for (int i = 0; i < zero__size(numbers) i++) {
-      int* number = zero__index(numbers, i)
-      printf("Number: %d\n", *number);
+  zero__add(node_t *, nodes, ((node_t){.x = 3, .y = 5}));
+  zero__add(node_t *, nodes, ((node_t){.x = 6, .y = 7}));
+
+  {
+    node_t *node = zero__index(nodes, 0);
+    assert(node->x == 3);
+    assert(node->y == 5);
+  }
+
+  {
+    node_t *node = zero__index(nodes, 1);
+    assert(node->x == 6);
+    assert(node->y == 7);
+  }
+
+  {
+    node_t *more_nodes = NULL;
+    for (int i = 0; i < 1000; i++) {
+      zero__add(node_t *, more_nodes, ((node_t){.x = i * i, .y = i * i * i}));
+    }
+
+    for (int i = 0; i < zero__size(more_nodes); i++) {
+      node_t *node = zero__index(more_nodes, i);
+      assert(node->x == i * i);
+      assert(node->y == i * i * i);
+    }
   }
 }
-
 ```
 
 ### With Iterator
 
 NOTE: Iterator is not available for copy free implementation.
 ```c
-#include <cvector.h>
+#include "cvector.h"
 
 int main() {
     // Initialize
@@ -106,7 +127,7 @@ int main() {
 
 ### Using struct
 ```c
-#include <cvector.h>
+#include "cvector.h"
 
 struct Node {
   int x;
