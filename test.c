@@ -264,9 +264,106 @@ void test__iteration() {
     assert(value == i * i);
     i++;
   }
+}
 
+void test__vector_with_struct() {
+  typedef struct Node_t {
+    int value;
+    struct Node_t* next_node;
+    bool done;
+  } Node_t;
 
+  typedef Vector(Node_t) vector_node_t;
+  typedef Vector_iterator(vector_node_t) iterator_node_t;
 
+  vector_node_t vector_node;
+  iterator_node_t iterator_node;
+
+  vector__init(&vector_node);
+  vector_iterator__init(&iterator_node, &vector_node);
+
+  Node_t* current = NULL;
+
+  for (int i = 0; i < 100; i++) {
+    Node_t node = ((Node_t){.value = i * i, .next_node=NULL,  .done=true});
+    vector__add(&vector_node, node);
+  }
+
+  int i = 0;
+  for (;;) {
+    if (vector_iterator__done(&iterator_node)) {
+      break;
+    }
+
+    Node_t *node = vector_iterator__next(&iterator_node);
+    assert(node -> done == true);
+    assert(node -> value == i * i);
+    i++;
+  }
+}
+
+void test__vector_with_list_string() {
+  typedef Vector(char*) vector_string_t;
+  typedef Vector_iterator(vector_string_t) iterator_string_t;
+
+  vector_string_t vector_string;
+  iterator_string_t iterator_string;
+
+  vector__init(&vector_string);
+  vector_iterator__init(&iterator_string, &vector_string);
+
+  char* names[3] = {"robus", "james", "jackson"};
+
+  for (int i = 0; i < 3; i++) {
+    char* name = names[i];
+    vector__add(&vector_string, name);
+  }
+
+  {
+    char* name = vector_iterator__next_cpy(&iterator_string);
+    assert(strcmp(name, "robus") == 0);
+  }
+
+  {
+    char* name = vector_iterator__next_cpy(&iterator_string);
+    assert(strcmp(name, "james") == 0);
+  }
+
+  {
+    char* name = vector_iterator__next_cpy(&iterator_string);
+    assert(strcmp(name, "jackson") == 0);
+  }
+}
+
+void test__nested_vector() {
+  typedef Vector(char) vector_char_t;
+  typedef Vector_iterator(vector_char_t) iterator_char_t;
+
+  vector_char_t vector_char;
+  iterator_char_t iterator_char;
+
+  vector__init(&vector_char);
+  vector_iterator__init(&iterator_char, &vector_char);
+
+  vector__add(&vector_char, 'a');
+  vector__add(&vector_char, 'b');
+  vector__add(&vector_char, 'c');
+  vector__add(&vector_char, 0);
+
+  typedef Vector(vector_char_t) vector_string_t;
+  typedef Vector_iterator(vector_string_t) iterator_string_t;
+
+  vector_string_t vector_string;
+  iterator_string_t iterator_string;
+
+  vector__init(&vector_string);
+  vector_iterator__init(&iterator_string, &vector_string);
+
+  vector__add(&vector_string, vector_char);
+
+  vector_char_t* value = vector_iterator__next(&iterator_string);
+
+  assert(strcmp(vector__wrapped_buffer(value), "abc") == 0);
 }
 
 int main() {
@@ -285,15 +382,10 @@ int main() {
   test__iterator_null();
   test__iteration();
 
-  /*// with structs*/
-  /*test__vector_with_struct();*/
+  // with structs
+  test__vector_with_struct();
 
-  /*// test with list of string*/
-  /*test__vector_with_list_string();*/
-  /*test__vector_with_list_string();*/
-
-
-  /*// test large values*/
-  /*test__vector_with_large_buffer();*/
-
+  // test with list of string
+  test__vector_with_list_string();
+  test__nested_vector();
 }
