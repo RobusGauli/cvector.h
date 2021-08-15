@@ -6,63 +6,53 @@
 #ifndef cvector_zero_h
 #define cvector_zero_h
 
-typedef struct zero_t {
-  size_t gsize;
-  size_t ***heads;
-} zero_t;
+#define zero__int(expr) ((int)(expr))
 
-#define zero__free(mem)                                                        \
-  do {                                                                         \
-    if (mem == NULL)                                                           \
-      return;                                                                  \
-    zero_t *z = (void *)(mem);                                                 \
-    size_t len = vector__size(z->heads);                                       \
-    for (int i = 0; i < len; i++) {                                            \
-      size_t *head = *((z->heads)[i]);                                         \
-      vector__free(head);                                                      \
-    }                                                                          \
-    free(z);                                                                   \
-  } while (0);
+#define Zero(Type_)                                                            \
+  Vector(Type_) vector_type_t##Type_;                                          \
+  Vector(vector_type_t##Type_ *) vector_type_pointer_t##Type_;                 \
+  typedef struct {                                                             \
+    vector_type_pointer_t##Type_ vector_type_pointer;                          \
+    vector_type_t##Type_ *holder;                                              \
+    vector_type_t##Type_ **next_holder;                                        \
+    size_t gsize;                                                              \
+  }
 
-#define zero__init(n)                                                          \
-  do {                                                                         \
-    zero_t *z = malloc(sizeof(zero_t));                                        \
-    z->gsize = 0;                                                              \
-    z->heads = NULL;                                                           \
-    (*(zero_t **)(n)) = z;                                                     \
-  } while (0);
+#define zero__blocksize(zero) (vector__size(&((zero)->vector_type_pointer)))
+#define zero__gsize(zero) ((zero)->gsize)
 
-#define zero__add(ty, mem, number)                                             \
+#define zero__init(zero)                                                       \
   do {                                                                         \
-    if (mem == NULL) {                                                         \
-      zero__init(&(mem));                                                        \
-    }                                                                          \
-    zero_t *z = (zero_t *)(mem);                                               \
-    size_t current_global_size = z->gsize;                                     \
-    size_t block_size = vector__size(z->heads);                                \
-                                                                               \
+    ((zero)->gsize) = 0;                                                       \
+    vector__init(&((zero)->vector_type_pointer));                              \
+  } while (0)
+
+#define zero__add(zero, value)                                                 \
+  do {                                                                         \
+    size_t gsize = zero__gsize(zero);                                          \
+    size_t block_size = zero__blocksize(zero);                                 \
     size_t available_size = (pow(2, block_size) - 1);                          \
                                                                                \
-    if (current_global_size >= available_size) {                               \
-      size_t **h = malloc(sizeof(size_t *));                                   \
-      int cap = pow(2, vector__size(z->heads));                                \
-      vector__add(&(z->heads), h);                                             \
-      vector__init_with_cap(h, cap);                                           \
+    if (gsize >= available_size) {                                             \
+      typeof(((zero)->holder)) pointer =                                       \
+          malloc(sizeof(**(((zero)->vector_type_pointer).e)));                 \
+      int cap = pow(2, block_size);                                            \
+      vector__init_with_cap(pointer, cap);                                     \
+      vector__add(&((zero)->vector_type_pointer), pointer);                    \
     }                                                                          \
-    ty m = (ty)(*((z->heads)[vector__size(z->heads) - 1]));                    \
-    vector__add(&m, (number));                                                 \
-    z->gsize++;                                                                \
-                                                                               \
-  } while (0);
+    typeof(((zero)->next_holder)) v = vector__index(                           \
+        &((zero)->vector_type_pointer), zero__blocksize(zero) - 1);            \
+    vector__add(*v, value);                                                    \
+    ((zero)->gsize)++;                                                         \
+  } while (0)
 
-#define zero__size(x) ((x) ? (size_t)(((zero_t *)(x))->gsize) : 0)
+#define zero__size(zero) ((zero)->gsize)
+#define zero__floor(expr) floor(expr)
 
-#define zero_int(x) ((int)(x))
-
-#define zero__index(numbers, index)                                            \
-  (void *)(&(((char *)(*((((zero_t *)(numbers))->heads)[zero_int(              \
-      log2((index) + 1))])))[((index) + 1 -                                    \
-                              zero_int(pow(2, zero_int(log2((index) + 1))))) * \
-                             sizeof(*(numbers))]))
+#define zero__index(zero, index)                                               \
+  vector__index(                                                               \
+      (*(vector__index(&((zero)->vector_type_pointer),                         \
+                       zero__int(zero__floor(log2(index + 1)))))),             \
+      index + 1 - zero__int(pow(2, zero__int(zero__floor(log2(index + 1))))))
 
 #endif /* cvector_zero_h */

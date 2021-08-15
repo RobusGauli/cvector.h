@@ -360,7 +360,7 @@ void test__nested_vector() {
   assert(strcmp(vector__wrapped_buffer(value), "abc") == 0);
 }
 
-int _main() {
+int main() {
   // vector apis
   test__null_vector();
   test__vector_init();
@@ -383,76 +383,4 @@ int _main() {
   test__vector_with_list_string();
   test__nested_vector();
   return 0;
-}
-
-#define zero__int(expr) ((int)(expr))
-
-
-#define Zero(Type_)                                                            \
-  Vector(Type_) vector_type_t##Type_; \
-  Vector(vector_type_t##Type_*) vector_type_pointer_t##Type_; \
-  typedef struct {                                                             \
-    vector_type_pointer_t##Type_ vector_type_pointer;                                 \
-    size_t gsize;                                                              \
-  }
-
-
-#define zero__blocksize(zero) (vector__size(&((zero)->vector_type_pointer)))
-#define zero__gsize(zero) ((zero)->gsize)
-
-#define zero__init(zero)                                                       \
-  do {                                                                         \
-    ((zero)->gsize) = 0;                                                       \
-    vector__init(&((zero)->vector_type_pointer));                              \
-  } while (0)
-
-
-#define zero__add(zero, value, Type_)                                                 \
-  do {                                                                         \
-    size_t gsize = zero__gsize(zero);                                          \
-    size_t block_size = zero__blocksize(zero);                                 \
-    size_t available_size = (pow(2, block_size) - 1);                          \
-                                                                               \
-    if (gsize >= available_size) {                                             \
-      vector_type_t##Type_ *pointer = malloc(sizeof(vector_type_t##Type_));                  \
-      int cap = pow(2, block_size);                                            \
-      vector__init_with_cap(pointer, cap);                                     \
-      vector__add(&((zero)->vector_type_pointer), pointer);                    \
-    }                                                                          \
-    vector_type_t##Type_ **v = vector__index(&((zero)->vector_type_pointer),          \
-                                      zero__blocksize(zero) - 1);              \
-    vector__add(*v, value);                                                    \
-    ((zero)->gsize)++;                                                         \
-  } while (0)
-
-#define zero__size(zero) ((zero)->gsize)
-#define zero__floor(expr) floor(expr)
-
-#define zero__index(zero, index)                                               \
-  vector__index((*(vector__index(&((zero)->vector_type_pointer),               \
-                                 zero__int(zero__floor(log2(index + 1)))))),                \
-                index + 1 - zero__int(pow(2, zero__int(zero__floor(log2(index + 1))))))
-
-int main() {
-
-  Zero(int) zero_t;
-  zero_t zero;
-  zero__init(&zero);
-
-  for (int i = 0; i < 10000; i++) {
-    zero__add(&zero, i, int);
-  }
-
-  Zero(float) zero_float_t;
-  zero_float_t floater;
-  zero__init(&floater);
-
-  for (int i = 0; i < 10000; i++) {
-    zero__add(&floater, 34.3, float);
-  }
-
-  for (int i = 0; i < 1000; i++) {
-    float* number = zero__index(&floater, i);
-    printf("the value is: %f\n", *number);
-  }
 }

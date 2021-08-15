@@ -7,7 +7,7 @@
 #include <string.h>
 
 #define Vector(Type_)                                                          \
-  struct {                                                                     \
+  typedef struct {                                                             \
     Type_ *e;                                                                  \
     size_t size;                                                               \
     size_t cap;                                                                \
@@ -16,23 +16,23 @@
 
 #define vector__setsize(tv, value) ((((tv)->e)) ? (((tv)->size) = (value)) : -1)
 
-#define vector__setcap(tv, value) ((((tv) -> e)) ? (((tv) -> cap) = (value)): -1)
+#define vector__setcap(tv, value) ((((tv)->e)) ? (((tv)->cap) = (value)) : -1)
 
 #define vector__init(tv)                                                       \
   do {                                                                         \
-      ((tv)->cap) = 0;                                                         \
-      ((tv)->size) = 0;                                                        \
-      ((tv)->e) = NULL;                                                        \
-      ((tv)->initialized) = true;                                              \
+    ((tv)->cap) = 0;                                                           \
+    ((tv)->size) = 0;                                                          \
+    ((tv)->e) = NULL;                                                          \
+    ((tv)->initialized) = true;                                                \
   } while (0)
 
 #define vector__init_with_cap(tv, ncap)                                        \
   do {                                                                         \
-      ((tv)->size) = 0;                                                        \
-      ((tv)->e) = NULL;                                                        \
-      ((tv)->cap) = 0;                                                         \
-      vector__grow(tv, ncap);                                                  \
-      ((tv)->initialized) = true;                                              \
+    ((tv)->size) = 0;                                                          \
+    ((tv)->e) = NULL;                                                          \
+    ((tv)->cap) = 0;                                                           \
+    vector__grow(tv, ncap);                                                    \
+    ((tv)->initialized) = true;                                                \
   } while (0)
 
 #define vector__grow(tv, ncap)                                                 \
@@ -43,7 +43,7 @@
     free((tv)->e);                                                             \
     ((tv)->e) = mem;                                                           \
     ((tv)->cap) = ncap;                                                        \
-  } while (0);
+  } while (0)
 
 #define vector__add(tv, value)                                                 \
   do {                                                                         \
@@ -81,10 +81,10 @@
 #define vector__last(tv) (vector__index(tv, vector__size(tv) - 1))
 #define vector__last_cpy(tv) (vector__index_cpy(tv, vector__size(tv) - 1))
 
-#define vector__wrapped_buffer(tv) ((tv) -> e)
+#define vector__wrapped_buffer(tv) ((tv)->e)
 
 #define Vector_iterator(Type_)                                                 \
-  struct {                                                                     \
+  typedef struct {                                                             \
     Type_ *ty;                                                                 \
     size_t current_index;                                                      \
   }
@@ -95,7 +95,9 @@
     ((it)->current_index) = 0;                                                 \
   } while (0)
 
-#define vector_iterator__done(it) ((((it) -> ty) != NULL) ? ((it)->current_index >= vector__size((it)->ty)): true)
+#define vector_iterator__done(it)                                              \
+  ((((it)->ty) != NULL) ? ((it)->current_index >= vector__size((it)->ty))      \
+                        : true)
 
 #define vector_iterator__current_index(it) ((it)->current_index)
 
@@ -113,6 +115,6 @@
 
 #define vector_iterator__peek_first_cpy(it) (vector__first_cpy((it)->ty))
 
-#define vector_iterator__wrapped_iterable(it) ((it) -> ty)
+#define vector_iterator__wrapped_iterable(it) ((it)->ty)
 
 #endif /* cvector_h */
