@@ -95,8 +95,7 @@
     ((it)->current_index) = 0;                                                 \
   } while (0)
 
-#define vector_iterator__done(it)                                              \
-  ((it)->current_index >= vector__size((it)->ty))
+#define vector_iterator__done(it) ((((it) -> ty) != NULL) ? ((it)->current_index >= vector__size((it)->ty)): true)
 
 #define vector_iterator__current_index(it) ((it)->current_index)
 
@@ -113,5 +112,7 @@
 #define vector_iterator__peek_first(it) (vector__first((it)->ty))
 
 #define vector_iterator__peek_first_cpy(it) (vector__first_cpy((it)->ty))
+
+#define vector_iterator__wrapped_iterable(it) ((it) -> ty)
 
 #endif /* cvector_h */
