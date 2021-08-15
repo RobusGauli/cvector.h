@@ -35,7 +35,7 @@ typedef struct zero_t {
 #define zero__add(ty, mem, number)                                             \
   do {                                                                         \
     if (mem == NULL) {                                                         \
-      zero__init(&mem);                                                        \
+      zero__init(&(mem));                                                        \
     }                                                                          \
     zero_t *z = (zero_t *)(mem);                                               \
     size_t current_global_size = z->gsize;                                     \
