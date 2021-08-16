@@ -107,14 +107,12 @@
 #define vector_iterator__next_cpy(it)                                          \
   (vector__index_cpy(((it)->ty), ((it)->current_index)++))
 
-#define vector_iterator__peek(it) (vector__last((it)->ty))
+#define vector_iterator__peek(it) (vector__index(((it)->ty), ((it)->current_index)))
 
-#define vector_iterator__peek_cpy(it) (vector__last_cpy((it)->ty))
-
-#define vector_iterator__peek_first(it) (vector__first((it)->ty))
-
-#define vector_iterator__peek_first_cpy(it) (vector__first_cpy((it)->ty))
+#define vector_iterator__peek_cpy(it) (vector__index_cpy(((it)->ty), ((it)->current_index)))
 
 #define vector_iterator__wrapped_iterable(it) ((it)->ty)
+
+#define vector_iterator__reset(it) (((it) -> current_index) = 0)
 
 #endif /* cvector_h */
