@@ -120,6 +120,10 @@ int main() {
   // Initialize iterator with vector of int
   vector_iterator__init(&iterator_int, &vector_int);
 
+  // Peek the current element
+  int* number = vector_iterator__peek(&iterator_int);
+  printf("The peeked number is: %d\n", *number);
+
   // Iterate using iterator
   for (;;) {
     if (vector_iterator__done(&iterator_int)) {
