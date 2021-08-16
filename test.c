@@ -384,12 +384,12 @@ void test__zero_index() {
   zero_int_t zero_int;
   zero__init(&zero_int);
 
-  for(int i = 0; i < 100000; i++) {
-    zero__add(&zero_int, i*i);
+  for (int i = 0; i < 100000; i++) {
+    zero__add(&zero_int, i * i);
   }
 
   for (int i = 0; i < zero__size(&zero_int); i++) {
-    assert(zero__index_cpy(&zero_int, i) == i*i);
+    assert(zero__index_cpy(&zero_int, i) == i * i);
   }
 
   zero__free(&zero_int);
@@ -406,12 +406,12 @@ void test__zero_with_struct() {
   zero__init(&zero_node);
 
   for (int i = 0; i < 1000; i++) {
-    zero__add(&zero_node, ((Node_t){.x=i, .y=i}));
+    zero__add(&zero_node, ((Node_t){.x = i, .y = i}));
   }
 
   for (int i = 0; i < 1000; i++) {
-    Node_t* node = zero__index(&zero_node, i);
-    assert(node -> x == i && node -> y == i);
+    Node_t *node = zero__index(&zero_node, i);
+    assert(node->x == i && node->y == i);
   }
 
   zero__free(&zero_node);
@@ -454,8 +454,8 @@ void test__zero_iteration() {
   int_iterator_t int_iterator;
 
   zero_iterator__init(&int_iterator, &zero_int);
-  for (int i = 0;i < 30; i++) {
-    int* value = zero__index(&zero_int, i);
+  for (int i = 0; i < 30; i++) {
+    int *value = zero__index(&zero_int, i);
   }
 
   int v = 0;
@@ -464,14 +464,14 @@ void test__zero_iteration() {
       break;
     }
 
-    int* value = zero_iterator__next(&int_iterator);
+    int *value = zero_iterator__next(&int_iterator);
     assert(*value == v++);
   }
 
   zero_iterator__reset(&int_iterator);
   v = 0;
 
-  for(;;) {
+  for (;;) {
     if (zero_iterator__done(&int_iterator)) {
       break;
     }
@@ -500,7 +500,6 @@ void test__zero_peek_first_last() {
   zero_iterator__next(&int_iterator);
 
   assert(zero_iterator__peek_cpy(&int_iterator) == 1);
-
 }
 
 int main() {
