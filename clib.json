@@ -4,6 +4,6 @@
   "description": "Generic vector implementation with iterator helpers in C",
   "version": "0.1.0",
   "license": "MIT",
-  "src": ["src/cvector.h"],
-  "keywords": ["vector", "array", "list"]
+  "src": ["src/cvector.h", "src/zero.h"],
+  "keywords": ["vector", "array", "list", "utils", "buffer", "generic"]
 }
