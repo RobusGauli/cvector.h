@@ -481,6 +481,31 @@ void test__zero_iteration() {
   }
 }
 
+
+void test() {
+  Zero(int) zero_int_t;
+  zero_int_t zero_int;
+
+  zero__init(&zero_int);
+
+  zero__add(&zero_int, 12);
+  zero__add(&zero_int, 13);
+  zero__add(&zero_int, 14);
+  zero__add(&zero_int, 15);
+
+  {
+    // Get the first element by copy
+    int number = zero__first_cpy(&zero_int);
+    printf("First element: %d\n", number);
+  }
+
+  {
+    // Get the last element by copy
+    int number = zero__last_cpy(&zero_int);
+    printf("Last element: %d\n", number);
+  }
+}
+
 void test__zero_peek_first_last() {
   Zero(int) zero_int_t;
   zero_int_t zero_int;
@@ -540,5 +565,6 @@ int main() {
 
   // zero iteration
   test__zero_iteration();
+  test();
   test__zero_peek_first_last();
 }

@@ -1,4 +1,4 @@
-# cvector(1)
+# cvector(1) | zero(1)
 
   Generic vector implementation with iterator helper in C. Also included <b>copy free</b> implemenation of vector.
 
@@ -22,6 +22,8 @@
 ## About
 
 Vector/List is fundamental data structure for just about anything. Therefore, I wanted something similar to what we have in other languages in C. Also, it includes `iterator` for free which allows you to do pretty interesting stuff such as peek, next, done, etc.
+
+Go to [cvector.h](https://github.com/RobusGauli/cvector/blob/master/src/cvector.h) and [zero.h](https://github.com/RobusGauli/cvector/blob/master/src/zero.h) for complete list of APIs.
 
 ## Usage
 
@@ -172,6 +174,80 @@ int main() {
 
     Node_t* node = vector_iterator__next(&iterator_node);
     printf("Node: x -> %d & y -> %d\n", node -> x, node -> y);
+  }
+}
+```
+
+### More APIs (cvector.h)
+
+```c
+#include <cvector.h>
+
+int main() {
+  Vector(int) vector_int_t;
+  vector_int_t vector_int;
+
+  vector__init(&vector_int);
+
+  vector__add(&vector_int, 12);
+  vector__add(&vector_int, 13);
+  vector__add(&vector_int, 14);
+  vector__add(&vector_int, 15);
+
+  {
+    // Get the first element
+    int* number = vector__first(&vector_int);
+    printf("First element: %d\n", *number);
+  }
+
+  {
+    // Get the last element by copy
+    int number = vector__last_cpy(&vector_int);
+    printf("Last element: %d\n", number);
+  }
+
+  {
+    size_t size_before = vector__size(&vector_int);
+
+    printf("Size of vector before pop: %ld\n", size_before);
+
+    // Pop element from the vector
+    int* number = vector__pop(&vector_int);
+
+    printf("Popped element: %d\n", *number);
+
+    size_t size_after = vector__size(&vector_int);
+    printf("Size of vector after pop: %ld\n", size_after);
+  }
+}
+```
+
+### More APIs (zero.h)
+
+```c
+#include <cvector.h>
+
+int main() {
+  Zero(int) zero_int_t;
+  zero_int_t zero_int;
+
+  zero__init(&zero_int);
+
+  zero__add(&zero_int, 12);
+  zero__add(&zero_int, 13);
+  zero__add(&zero_int, 14);
+  zero__add(&zero_int, 15);
+
+  {
+    // Get the first element by copy
+    int number = zero__first_cpy(&zero_int);
+    printf("First element: %d\n", number);
+  }
+
+  {
+    // Get the last element by copy
+    int number = zero__last_cpy(&zero_int);
+    printf("Last element: %d\n", number);
   }
 }
 ```
