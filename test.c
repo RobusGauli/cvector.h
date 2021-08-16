@@ -502,6 +502,12 @@ void test__zero_peek_first_last() {
   assert(zero_iterator__peek_cpy(&int_iterator) == 1);
 }
 
+// Define zero type of int
+Vector(int) vector_int_t;
+
+// Define iterator type for iterator_int_t
+Vector_iterator(vector_int_t) iterator_int_t;
+
 int main() {
   // vector apis
   test__null_vector();
@@ -535,6 +541,4 @@ int main() {
   // zero iteration
   test__zero_iteration();
   test__zero_peek_first_last();
-
-  return 0;
 }

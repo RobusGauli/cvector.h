@@ -2,8 +2,7 @@
 
   Generic vector implementation with iterator helper in C. Also included <b>copy free</b> implemenation of vector.
 
-***
-`zero.h` is copy free vector implementation i.e there is no copy when size exceeds capacity.
+`zero.h` uses copy free allocator i.e there is no copy when size exceeds capacity.
 
 ## Copy Free Vector Representation (zero.h)
 
@@ -31,69 +30,58 @@ Vector/List is fundamental data structure for just about anything. Therefore, I 
 #include "cvector.h"
 
 int main() {
-    // Initialize
-    int* numbers = NULL;
+  // Define type that holds vector of int
+  Vector(int) vector_int_t;
 
-    // Push number to the list
-    vector__add(&numbers, 1);
-    vector__add(&numbers, 2);
-    vector__add(&numbers, 3);
+  // Declare variable of type `vector_int_t`
+  vector_int_t vector_int;
 
-    // Size of the vector
-    printf("Size is: %ld\n", vector__size(numbers));
-    // Cap of the vector
-    printf("Cap is: %ld\n", vector__cap(numbers));
+  // Initialize
+  vector__init(&vector_int);
 
-    // Iterate over the numbers
-    for (int i = 0; i < vector__size(numbers) i++) {
-        int* number = &(numbers[i]);
-        printf("Number: %d\n", *number);
-    }
+  // Push number to vector
+  for (int i = 0; i < 100; i++) {
+    vector__add(&vector_int, i);
+  }
+
+  // Size of the vector
+  size_t size = vector__size(&vector_int);
+
+  // Iterate over elements
+  for (int i = 0; i < 100; i++) {
+    int* number = vector__index(&vector_int, i);
+    printf("Number is: %d\n", *number);
+  }
 }
 ```
 
 ### Example using copy free vector
 
 ```c
-#include <assert.h>
-
 #include "zero.h"
 
 int main() {
+  // Define zero type of int
+  Zero(int) zero_int_t;
 
-  typedef struct {
-    int x;
-    int y;
-  } node_t;
+  // Declare variable of type `zero_int_t`
+  zero_int_t zero_int;
 
-  node_t *nodes = NULL;
+  // Initialize
+  zero__init(&zero_int);
 
-  zero__add(node_t *, nodes, ((node_t){.x = 3, .y = 5}));
-  zero__add(node_t *, nodes, ((node_t){.x = 6, .y = 7}));
-
-  {
-    node_t *node = zero__index(nodes, 0);
-    assert(node->x == 3);
-    assert(node->y == 5);
+  // Push elements to vector
+  for (int i = 0; i < 100; i++) {
+    zero__add(&zero_int, i*i);
   }
 
-  {
-    node_t *node = zero__index(nodes, 1);
-    assert(node->x == 6);
-    assert(node->y == 7);
-  }
+  // Size of zero vector
+  size_t size = zero__size(&zero_int);
 
-  {
-    node_t *more_nodes = NULL;
-    for (int i = 0; i < 1000; i++) {
-      zero__add(node_t *, more_nodes, ((node_t){.x = i * i, .y = i * i * i}));
-    }
-
-    for (int i = 0; i < zero__size(more_nodes); i++) {
-      node_t *node = zero__index(more_nodes, i);
-      assert(node->x == i * i);
-      assert(node->y == i * i * i);
-    }
+  // Iterate over vector
+  for (int i = 0; i < size; i++) {
+    int* number = zero__index(&zero_int, i);
+    printf("Number at index: %d is %d\n", i, *number);
   }
 }
 ```
@@ -104,24 +92,41 @@ NOTE: Iterator is not available for copy free implementation.
 ```c
 #include "cvector.h"
 
+// Define zero type of int
+Vector(int) vector_int_t;
+
+
+// Define iterator type for iterator_int_t
+Vector_iterator(vector_int_t) iterator_int_t;
+
 int main() {
-    // Initialize
-    int* numbers = NULL;
 
-    // Push number to the list
-    vector__add(&numbers, 1);
-    vector__add(&numbers, 2);
-    vector__add(&numbers, 3);
+  // Declare variable of type `zero_int_t`
+  vector_int_t vector_int;
 
-    // Peek the value
-    vector_iterator_t iterator = vector_iterator__new(numbers);
-    for (;;) {
-        if (vector_iterator__done(&iterator)) {
-            break;
-        }
-        int* number = vector_iterator__next(&iterator);
-        printf("Number: %d", *num);
+  // Initialize
+  vector__init(&vector_int);
+
+  // Push elements to vector
+  for (int i = 0; i < 10; i++) {
+    vector__add(&vector_int, i*i);
+  }
+
+  // Declare varaible of type `iterator_int_t`
+  iterator_int_t iterator_int;
+
+  // Initialize iterator with vector of int
+  vector_iterator__init(&iterator_int, &vector_int);
+
+  // Iterate using iterator
+  for (;;) {
+    if (vector_iterator__done(&iterator_int)) {
+      break;
     }
+
+    int* number = vector_iterator__next(&iterator_int);
+    printf("Got number: %d\n", *number);
+  }
 }
 ```
 
@@ -129,28 +134,44 @@ int main() {
 ```c
 #include "cvector.h"
 
-struct Node {
+typedef struct Node_t {
   int x;
   int y;
-};
+} Node_t;
 
 int main() {
-  struct Node* nodes = NULL;
+  // Define vector type of `Node_t`
+  Vector(Node_t) vector_node_t;
 
-  // Add to the list
-  vector__add(&nodes, ((struct Node){.x=1, .y=1}));
-  vector__add(&nodes, ((struct Node){.x=2, .y=2}));
+  // Declare variable of type `vector_node_t`
+  vector_node_t vector_node;
+
+  // Initialize vector
+  vector__init(&vector_node);
+
+  // Push to vector
+  for (int i = 0; i < 100; i++) {
+    Node_t node = ((Node_t){.x = i, .y = i*i});
+    vector__add(&vector_node, node);
+  }
+
+  // Define iterator of type `vector_node_t`
+  Vector_iterator(vector_node_t) iterator_node_t;
+
+  // Declare variable of type `iterator_node_t`
+  iterator_node_t iterator_node;
+
+  // Initialize iterator
+  vector_iterator__init(&iterator_node, &vector_node);
 
   // Iterate
-  vector_iterator_t iterator = vector_iterator__new(nodes);
-  for (;;) {
-    if (vector_iterator__done(&iterator)) {
+  for(;;) {
+    if (vector_iterator__done(&iterator_node)) {
       break;
     }
 
-    struct Node* node = vector_iterator__next(&iterator);
-    printf("X val of node is: %d\n", node -> x);
-    printf("Y val of node is: %d\n", node -> y);
+    Node_t* node = vector_iterator__next(&iterator_node);
+    printf("Node: x -> %d & y -> %d\n", node -> x, node -> y);
   }
 }
 ```
