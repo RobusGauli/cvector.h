@@ -57,6 +57,9 @@
     ((tv)->size)++;                                                            \
   } while (0)
 
+#define vector__set_at_index(tv, index, value) ((index < vector__size(tv)) ? ((((tv) -> e)[index])= value, 0) : -1)
+
+
 #define vector__size(tv) ((tv)->size)
 
 #define vector__index(tv, i) &(((tv)->e)[i])

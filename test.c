@@ -527,6 +527,25 @@ void test__zero_peek_first_last() {
   assert(zero_iterator__peek_cpy(&int_iterator) == 1);
 }
 
+void test__vector_set_at_index() {
+  Vector(int) vector_int_t;
+
+  vector_int_t vector_int;
+
+  vector__init_with_cap(&vector_int, 2);
+
+  vector__add(&vector_int, 44);
+  vector__add(&vector_int, 45);
+
+  assert(*vector__index(&vector_int, 1) == 45);
+
+  assert(vector__set_at_index(&vector_int, 1, 100) == 0);
+  assert(*vector__index(&vector_int, 1) == 100);
+
+  // attempt to set beyond bound
+  assert(vector__set_at_index(&vector_int, 12, 100) == -1);
+}
+
 // Define zero type of int
 Vector(int) vector_int_t;
 
@@ -543,6 +562,7 @@ int main() {
   test__vector_setcap();
   test__vector_loop();
   test__vector_pop();
+  test__vector_set_at_index();
 
   // iterator apis
   test__iterator_new();

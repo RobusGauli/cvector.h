@@ -198,18 +198,21 @@ int main() {
   vector__add(&vector_int, 14);
   vector__add(&vector_int, 15);
 
+  // First
   {
     // Get the first element
     int* number = vector__first(&vector_int);
     printf("First element: %d\n", *number);
   }
 
+  // Last
   {
     // Get the last element by copy
     int number = vector__last_cpy(&vector_int);
     printf("Last element: %d\n", number);
   }
 
+  // Pop
   {
     size_t size_before = vector__size(&vector_int);
 
@@ -222,6 +225,13 @@ int main() {
 
     size_t size_after = vector__size(&vector_int);
     printf("Size of vector after pop: %ld\n", size_after);
+  }
+
+  // Set value at index
+  {
+    if(vector__set_at_index(&vector_int, 0, 56) == -1) {
+      fprintf(stderr, "Failed to set the value '56' at index '0'");
+    }
   }
 }
 ```
