@@ -117,8 +117,8 @@ void test__vector_loop() {
 
   {
     typedef struct node_t {
-      int x;
-      int y;
+      unsigned long x;
+      unsigned long y;
     } node_t;
 
     CVector(node_t) vector_node_t;
@@ -128,11 +128,11 @@ void test__vector_loop() {
     // construction
     cvector__init(&vector_node);
 
-    for (int i = 0; i < 100000; i++) {
+    for (size_t i = 0; i < 10000; i++) {
       cvector__add(&vector_node, ((node_t){.x = i * i, .y = i * i * i}));
     }
 
-    for (int i = 0; i < 100000; i++) {
+    for (size_t i = 0; i < 10000; i++) {
       node_t node = cvector__index_cpy(&vector_node, i);
       assert(node.x == i * i);
       assert(node.y == i * i * i);
