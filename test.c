@@ -97,18 +97,18 @@ void test__vector_setcap() {
 
 void test__vector_loop() {
   {
-    CVector(int) vector_int_t;
+    CVector(size_t) vector_int_t;
     // declare
     vector_int_t vector_int;
     // constructor
     cvector__init(&vector_int);
 
-    for (int i = 0; i < 10000; i++) {
+    for (int i = 0; i < 1000; i++) {
       cvector__add(&vector_int, i * i);
     }
 
-    for (int i = 0; i < 10000; i++) {
-      int *value = cvector__index(&vector_int, i);
+    for (size_t i = 0; i < 1000; i++) {
+      size_t *value = cvector__index(&vector_int, i);
       assert(*value == i * i);
     }
 
