@@ -13,6 +13,14 @@
     bool cvector__initialized_m;                                                                   \
   }
 
+#ifndef CVECTOR__MIN_SHRINK_SIZE
+#define CVECTOR__MIN_SHRINK_SIZE 32
+#endif
+
+#ifndef CVECTOR__LOAD_FACTOR
+#define CVECTOR__LOAD_FACTOR 0.25
+#endif
+
 #define cvector__elem_(vec) ((vec)->cvector__elem_m)
 #define cvector__set_elem_(vec, elem) ((cvector__elem_(vec)) = (elem))
 #define cvector__elem_size_(vec) (sizeof((*(cvector__elem_(vec)))))
@@ -36,15 +44,15 @@
     cvector__setsize_((vec), 0);                                                                   \
     cvector__setcap_((vec), 0);                                                                    \
     cvector__set_elem_((vec), (NULL));                                                             \
-    cvector__grow_((vec), (cap));                                                                  \
+    cvector__resize_((vec), (cap));                                                                \
     cvector__set_initialized_((vec), true);                                                        \
   } while (0)
 
-#define cvector__grow_(vec, cap)                                                                   \
+#define cvector__resize_(vec, cap)                                                                 \
   do {                                                                                             \
     void *cvector__mem_m = malloc((cvector__elem_size_(vec)) * (cap));                             \
     memcpy((cvector__mem_m), (cvector__elem_(vec)),                                                \
-           ((cvector__elem_size_(vec)) * (cvector__cap_(vec))));                                   \
+           ((cvector__elem_size_(vec)) * (cvector__size(vec))));                                   \
     free(cvector__elem_(vec));                                                                     \
     cvector__set_elem_((vec), (cvector__mem_m));                                                   \
     cvector__setcap_((vec), (cap));                                                                \
@@ -53,7 +61,7 @@
 #define cvector__add(vec, val)                                                                     \
   do {                                                                                             \
     if (cvector__size(vec) >= cvector__cap_(vec)) {                                                \
-      cvector__grow_((vec), ((cvector__cap_(vec) == 0) ? 1 : ((cvector__cap_(vec)) * 2)));         \
+      cvector__resize_((vec), ((cvector__cap_(vec) == 0) ? 1 : ((cvector__cap_(vec)) * 2)));       \
     }                                                                                              \
     (((cvector__elem_(vec))[cvector__size(vec)]) = (val));                                         \
     cvector__setsize_((vec), (cvector__size(vec) + 1));                                            \
@@ -65,14 +73,35 @@
 #define cvector__index(vec, index) (&((cvector__elem_(vec))[(index)]))
 #define cvector__index_cpy(vec, index) ((cvector__elem_(vec))[(index)])
 
-#define cvector__free(vec) (free(cvector__elem_(vec)))
+#define cvector__free(vec)                                                                         \
+  do {                                                                                             \
+    free(cvector__elem_(vec));                                                                     \
+    cvector__set_elem_((vec), NULL);                                                               \
+  } while (0)
+
+#define cvector__shrink_(vec)                                                                      \
+  do {                                                                                             \
+    double cvector__current_load_factor =                                                          \
+        (((double)cvector__size(vec)) / ((double)cvector__cap_(vec)));                             \
+    if ((cvector__current_load_factor <= CVECTOR__LOAD_FACTOR) &&                                  \
+        (cvector__size(vec) >= CVECTOR__MIN_SHRINK_SIZE)) {                                        \
+      cvector__resize_((vec), (cvector__size(vec) * 2));                                           \
+    }                                                                                              \
+  } while (0)
 
 #define cvector__pop(vec)                                                                          \
-  (cvector__setsize_((vec), (cvector__size(vec) - 1)), cvector__index((vec), cvector__size(vec)))
+  ({                                                                                               \
+    cvector__shrink_(vec);                                                                         \
+    cvector__setsize_((vec), (cvector__size(vec) - 1));                                            \
+    (cvector__index((vec), cvector__size(vec)));                                                   \
+  })
 
 #define cvector__pop_cpy(vec)                                                                      \
-  (cvector__setsize_((vec), (cvector__size(vec) - 1)),                                             \
-   cvector__index_cpy((vec), cvector__size(vec)))
+  ({                                                                                               \
+    cvector__shrink_(vec);                                                                         \
+    cvector__setsize_((vec), (cvector__size(vec) - 1));                                            \
+    (cvector__index_cpy((vec), cvector__size(vec)));                                               \
+  })
 
 #define cvector__first(vec) (cvector__index((vec), 0))
 #define cvector__first_cpy(vec) (cvector__index_cpy((vec), 0))

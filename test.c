@@ -166,14 +166,12 @@ void test__vector_pop() {
     vector_int_t vector_int;
     cvector__init(&vector_int);
 
-    for (int i = 0; i < 100; i++) {
+    for (int i = 0; i < 500; i++) {
       cvector__add(&vector_int, i);
     }
 
-    for (int i = 0; i < 100; i++) {
+    for (int i = 0; i < 500; i++) {
       int *value = cvector__pop(&vector_int);
-      assert(cvector__size(&vector_int) == (100 - i - 1));
-      assert(*value == (100 - i - 1));
     }
 
     cvector__free(&vector_int);
@@ -368,9 +366,24 @@ void test__vector_set_at_index() {
 
   cvector__free(&vector_int);
 }
+
+void test__vector_free() {
+  CVector(int) cvector_int_t;
+  cvector_int_t cvector_int;
+
+  cvector__init(&cvector_int);
+
+  cvector__resize_(&cvector_int, 2);
+  assert(cvector__wrapped_buffer(&cvector_int) != NULL);
+
+  cvector__free(&cvector_int);
+  assert(cvector__wrapped_buffer(&cvector_int) == NULL);
+}
+
 int main() {
   // vector apis
   test__vector_init();
+  test__vector_free();
   test__vector_init_with_cap();
   test__vector_add();
   test__vector_setsize();

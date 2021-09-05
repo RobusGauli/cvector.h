@@ -1,6 +1,6 @@
 # cvector(1)
 
-  Generic & Typesafe Vector implementation C in ~100 LOC.
+  Generic & Typesafe Vector implementation C in ~150 LOC.
 
 
 ## Installation
