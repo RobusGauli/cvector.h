@@ -1,7 +1,13 @@
 # cvector(1)
-[code quality](https://www.code-inspector.com/project/27388/score/svg)
 
-  Generic & Typesafe Vector implementation C in ~150 LOC.
+![MIT License][license-shield] ![Quality](https://www.code-inspector.com/project/27388/score/svg) ![Grade](https://www.code-inspector.com/project/27388/status/svg)
+
+
+
+
+[license-shield]: https://img.shields.io/github/license/othneildrew/Best-README-Template.svg?style=flat-square
+
+Generic & Typesafe Vector implementation C in ~150 LOC.
 
 
 ## Installation
