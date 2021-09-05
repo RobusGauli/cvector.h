@@ -6,118 +6,125 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define Vector(Type_)                                                          \
+#define CVector(cvector__elem_type_)                                                          \
   typedef struct {                                                             \
-    Type_ *e;                                                                  \
-    size_t size;                                                               \
-    size_t cap;                                                                \
-    bool initialized;                                                          \
+    cvector__elem_type_ *cvector__elem_m;                                                                  \
+    size_t cvector__size_m;                                                               \
+    size_t cvector__cap_m;                                                                \
+    bool cvector__initialized_m;                                                          \
   }
 
-#define vector__setsize(tv, value) ((((tv)->e)) ? (((tv)->size) = (value)) : -1)
+#define cvector__elem_(vec) ((vec) -> cvector__elem_m)
+#define cvector__set_elem_(vec, elem) ((cvector__elem_(vec)) =  (elem))
 
-#define vector__setcap(tv, value) ((((tv)->e)) ? (((tv)->cap) = (value)) : -1)
+/* Used for extracting the size out of the pointer */
+#define cvector__elem_size_(vec) (sizeof((*(cvector__elem_(vec)))))
 
-#define vector__init(tv)                                                       \
+#define cvector__size(vec) ((vec) -> cvector__size_m)
+#define cvector__setsize_(vec, size) ((cvector__size(vec) = (size)))
+
+#define cvector__cap_(vec) ((vec)->cvector__cap_m)
+#define cvector__setcap_(vec, cap) (cvector__cap_(vec) = (cap))
+
+#define cvector__initialized_(vec) ((vec) -> cvector__initialized_m)
+#define cvector__set_initialized_(vec, flag) (cvector__initialized_(vec) = (flag))
+
+#define cvector__init(vec)                                                       \
   do {                                                                         \
-    ((tv)->cap) = 0;                                                           \
-    ((tv)->size) = 0;                                                          \
-    ((tv)->e) = NULL;                                                          \
-    ((tv)->initialized) = true;                                                \
+    cvector__setcap_(vec, 0); \
+    cvector__setsize_(vec, 0); \
+    cvector__set_elem_(vec, (NULL)); \
+    cvector__set_initialized_(vec, true); \
   } while (0)
 
-#define vector__init_with_cap(tv, ncap)                                        \
+#define cvector__init_with_cap(vec, cap)                                        \
   do {                                                                         \
-    ((tv)->size) = 0;                                                          \
-    ((tv)->e) = NULL;                                                          \
-    ((tv)->cap) = 0;                                                           \
-    vector__grow(tv, ncap);                                                    \
-    ((tv)->initialized) = true;                                                \
+    cvector__setsize_((vec), 0); \
+    cvector__setcap_((vec), 0); \
+    cvector__set_elem_((vec), (NULL)); \
+    cvector__grow_((vec), (cap));                                                    \
+    cvector__set_initialized_((vec), true); \
   } while (0)
 
-#define vector__grow(tv, ncap)                                                 \
+#define cvector__grow_(vec, cap)                                                 \
   do {                                                                         \
-    size_t cap = ((tv)->cap);                                                  \
-    void *mem = malloc(sizeof(*((tv)->e)) * ncap);                             \
-    memcpy(mem, ((tv)->e), sizeof(*((tv)->e)) * cap);                          \
-    free((tv)->e);                                                             \
-    ((tv)->e) = mem;                                                           \
-    ((tv)->cap) = ncap;                                                        \
+    void *cvector__mem_m = malloc((cvector__elem_size_(vec)) *  (cap));                             \
+    memcpy((cvector__mem_m), (cvector__elem_(vec)), ((cvector__elem_size_(vec)) * (cvector__cap_(vec))));                          \
+    free(cvector__elem_(vec)); \
+    cvector__set_elem_((vec), (cvector__mem_m)); \
+    cvector__setcap_((vec), (cap)); \
   } while (0)
 
-#define vector__add(tv, value)                                                 \
+#define cvector__add(vec, val)                                                 \
   do {                                                                         \
-    size_t size = ((tv)->size);                                                \
-    size_t cap = ((tv)->cap);                                                  \
-    if (size >= cap) {                                                         \
-      size_t new_cap = (cap == 0) ? 1 : (cap * 2);                             \
-      vector__grow(tv, new_cap);                                               \
+    if (cvector__size(vec) >= cvector__cap_(vec)) {                                                         \
+      cvector__grow_(vec, ((cvector__cap_(vec) == 0) ? 1 : ((cvector__cap_(vec)) * 2)));                                               \
     }                                                                          \
-    (((tv)->e)[size]) = value;                                                 \
-    ((tv)->size)++;                                                            \
+    (((cvector__elem_(vec))[cvector__size(vec)]) = (val));                                                 \
+    cvector__setsize_(vec, (cvector__size(vec) + 1)); \
   } while (0)
 
-#define vector__set_at_index(tv, index, value) ((index < vector__size(tv)) ? ((((tv) -> e)[index])= value, 0) : -1)
+#define cvector__set_at_index(vec, index, val) ((( index ) < cvector__size(vec)) ? (((cvector__elem_(vec))[( index )])=(val), 0) : -1)
 
 
-#define vector__size(tv) ((tv)->size)
+#define cvector__index(vec, index) (&((cvector__elem_(vec))[(index)]))
 
-#define vector__index(tv, i) &(((tv)->e)[i])
+#define cvector__index_cpy(vec, index) ((cvector__elem_(vec))[(index)])
 
-#define vector__index_cpy(tv, i) (((tv)->e)[i])
 
-#define vector__cap(tv) ((tv)->cap)
+#define cvector__free(vec) (free(cvector__elem_(vec)))
 
-#define vector__free(tv) (free((tv)->e))
+#define cvector__pop(vec)                                                        \
+  (cvector__setsize_((vec), (cvector__size(vec) - 1)),                                \
+   cvector__index((vec), cvector__size(vec)))
 
-#define vector__pop(tv)                                                        \
-  (vector__setsize((tv), vector__size(tv) - 1),                                \
-   vector__index((tv), vector__size(tv)))
+#define cvector__pop_cpy(vec)                                                    \
+  (cvector__setsize_((vec), (cvector__size(vec) - 1)),                                \
+   cvector__index_cpy((vec), cvector__size(vec)))
 
-#define vector__pop_cpy(tv)                                                    \
-  (vector__setsize((tv), vector__size(tv) - 1),                                \
-   vector__index_cpy((tv), vector__size(tv)))
+#define cvector__first(vec) (cvector__index(( vec ), 0))
+#define cvector__first_cpy(vec) (cvector__index_cpy(( vec ), 0))
 
-#define vector__first(tv) (vector__index(tv, 0))
-#define vector__first_cpy(tv) (vector__index_cpy(tv, 0))
+#define cvector__last(vec) (cvector__index(( vec ), cvector__size(vec) - 1))
+#define cvector__last_cpy(vec) (cvector__index_cpy(( vec ), cvector__size(vec) - 1))
 
-#define vector__last(tv) (vector__index(tv, vector__size(tv) - 1))
-#define vector__last_cpy(tv) (vector__index_cpy(tv, vector__size(tv) - 1))
+#define cvector__wrapped_buffer(vec) cvector__elem_(vec)
 
-#define vector__wrapped_buffer(tv) ((tv)->e)
-
-#define Vector_iterator(Type_)                                                 \
+#define CVector_iterator(cvector__type_)                                                 \
   typedef struct {                                                             \
-    Type_ *ty;                                                                 \
-    size_t current_index;                                                      \
+    cvector__type_ *cvector_iterator__vec_m;                                                                 \
+    size_t cvector_iterator__current_index_m;                                                      \
   }
 
-#define vector_iterator__init(it, tv)                                          \
+#define cvector_iterator__vec_(iterator) ((iterator) -> cvector_iterator__vec_m)
+#define cvector_iterator__set_vec_(iterator, vec) ((cvector_iterator__vec_(iterator)) = (vec))
+
+#define cvector_iterator__current_index_(iterator) ((iterator)->cvector_iterator__current_index_m)
+#define cvector_iterator__set_current_index_(iterator, index) ((cvector_iterator__current_index_(iterator)) = (index))
+
+#define cvector_iterator__init(iterator, vec)                                          \
   do {                                                                         \
-    ((it)->ty) = (tv);                                                         \
-    ((it)->current_index) = 0;                                                 \
+    cvector_iterator__set_vec_((iterator), (vec)); \
+    cvector_iterator__set_current_index_((iterator), 0); \
   } while (0)
 
-#define vector_iterator__done(it)                                              \
-  ((((it)->ty) != NULL) ? ((it)->current_index >= vector__size((it)->ty))      \
-                        : true)
+#define cvector_iterator__done(iterator)                                              \
+  (((cvector_iterator__vec_(iterator)) != ( NULL )) ? ((cvector_iterator__current_index_(iterator)) >= cvector__size(cvector_iterator__vec_(iterator))): (true))
 
-#define vector_iterator__current_index(it) ((it)->current_index)
+#define cvector_iterator__next(iterator)                                              \
+  (cvector__index((cvector_iterator__vec_(iterator)), (((cvector_iterator__current_index_(iterator))++))))
 
-#define vector_iterator__next(it)                                              \
-  (vector__index(((it)->ty), ((it)->current_index)++))
+#define cvector_iterator__next_cpy(iterator)                                          \
+  (cvector__index_cpy((cvector_iterator__vec_(iterator)), (((cvector_iterator__current_index_(iterator))++))))
 
-#define vector_iterator__next_cpy(it)                                          \
-  (vector__index_cpy(((it)->ty), ((it)->current_index)++))
+#define cvector_iterator__peek(iterator)                                              \
+  (cvector__index((cvector_iterator__vec_(iterator)), (cvector_iterator__current_index_(iterator))))
 
-#define vector_iterator__peek(it)                                              \
-  (vector__index(((it)->ty), ((it)->current_index)))
+#define cvector_iterator__peek_cpy(iterator)                                          \
+  (cvector__index_cpy((cvector_iterator__vec_(iterator)), (cvector_iterator__current_index_(iterator))))
 
-#define vector_iterator__peek_cpy(it)                                          \
-  (vector__index_cpy(((it)->ty), ((it)->current_index)))
+#define cvector_iterator__wrapped_iterable(iterator) ((cvector_iterator__vec_(iterator)))
 
-#define vector_iterator__wrapped_iterable(it) ((it)->ty)
-
-#define vector_iterator__reset(it) (((it)->current_index) = 0)
+#define cvector_iterator__reset(iterator) ((cvector_iterator__set_current_index_((iterator), 0)))
 
 #endif /* cvector_h */
