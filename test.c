@@ -206,7 +206,6 @@ void test__iterator_null() {
   cvector_iterator__init(&iterator_int, NULL);
 
   assert(cvector_iterator__done(&iterator_int) == true);
-
 }
 
 void test__iteration() {
@@ -355,7 +354,6 @@ void test__vector_set_at_index() {
   vector_int_t vector_int;
 
   cvector__init_with_cap(&vector_int, 10);
-
 
   cvector__add(&vector_int, 44);
   cvector__add(&vector_int, 45);
