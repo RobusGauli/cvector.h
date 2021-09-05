@@ -1,4 +1,5 @@
 # cvector(1)
+[code quality](https://www.code-inspector.com/project/27388/score/svg)
 
   Generic & Typesafe Vector implementation C in ~150 LOC.
 
