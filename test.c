@@ -134,7 +134,7 @@ void test__vector_loop() {
 
     for (size_t i = 0; i < 1000; i++) {
       node_t node = cvector__index_cpy(&vector_node, i);
-      assert(node.x == i * i);
+      assert(node.x == i * i * i);
       assert(node.y == i * i * i);
     }
 
