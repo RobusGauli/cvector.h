@@ -4,24 +4,22 @@
 
 [license-shield]: https://img.shields.io/github/license/othneildrew/Best-README-Template.svg?style=flat-square
 
-Generic & Typesafe Vector implementation C in ~150 LOC.
-
-
-## Installation
-
-  It has a single header file file called `cvector.h`. You can simply copy/paste in your source directory to get started. You can also install via clib (package manager for C).
-
-  With [clib](https://github.com/clibs/clib):
-  ```sh
-  clib install robusgauli/cvector
-  ```
-
+Generic & Typesafe Vector implementation in C (****~150 LOC*).
 
 ## About
 
 Vector/List is fundamental data structure for just about anything. Almost all programming languages as a builtin or packaged into standard library except for C. Also, it includes `Iterator` for free which allows you to do pretty interesting stuff such as peek, next, done, etc.
 
 Go to [cvector.h](https://github.com/RobusGauli/cvector/blob/master/src/cvector.h) for complete list of APIs.
+
+## Installation
+
+  It has a single header file called `cvector.h`. You can simply copy/paste in your source directory to get started. You can also install via clib (package manager for C).
+
+  With [clib](https://github.com/clibs/clib):
+  ```sh
+  clib install robusgauli/cvector
+  ```
 
 ## Usage
 
