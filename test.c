@@ -29,7 +29,7 @@ void test__vector_add() {
   assert(cvector__size(&vector_char) == 4);
   assert(cvector__cap_(&vector_char) == 4);
 
-  assert(cvector__index_cpy(&vector_char, 0) == 'a');
+  assert(cvector__index(&vector_char, 0) == 'a');
 
   char *string = cvector__wrapped_buffer(&vector_char);
   assert(strcmp(string, "abc") == 0);
@@ -108,8 +108,8 @@ void test__vector_loop() {
     }
 
     for (size_t i = 0; i < 1000; i++) {
-      size_t *value = cvector__index(&vector_int, i);
-      assert(*value == i * i);
+      size_t value = cvector__index(&vector_int, i);
+      assert(value == i * i);
     }
 
     cvector__free(&vector_int);
@@ -133,7 +133,7 @@ void test__vector_loop() {
     }
 
     for (size_t i = 0; i < 1000; i++) {
-      node_t node = cvector__index_cpy(&vector_node, i);
+      node_t node = cvector__index(&vector_node, i);
       assert(node.x == i * i);
       assert(node.y == i * i * i);
     }
@@ -153,7 +153,7 @@ void test__vector_pop() {
     }
 
     for (int i = 0; i < 100; i++) {
-      int value = cvector__pop_cpy(&vector_int);
+      int value = cvector__pop(&vector_int);
       assert(cvector__size(&vector_int) == (100 - i - 1));
       assert(value == (100 - i - 1));
     }
@@ -171,11 +171,33 @@ void test__vector_pop() {
     }
 
     for (int i = 0; i < 500; i++) {
-      int *value = cvector__pop(&vector_int);
+      int value = cvector__pop(&vector_int);
     }
 
     cvector__free(&vector_int);
   }
+
+  {
+    CVector(int) vector_int_t;
+    vector_int_t vector_int;
+
+    cvector__init(&vector_int);
+
+    cvector__add(&vector_int, 3);
+    cvector__add(&vector_int, 4);
+    cvector__add(&vector_int, 5);
+    int value = cvector__pop(&vector_int);
+
+    assert(value == 5);
+    assert(cvector__size(&vector_int) == 2);
+
+    assert(cvector__pop(&vector_int) == 4);
+    assert(cvector__pop(&vector_int) == 3);
+    assert(cvector__size(&vector_int) == 0);
+    cvector__free(&vector_int);
+  }
+
+
 }
 
 void test__iterator_new() {
@@ -230,7 +252,7 @@ void test__iteration() {
       break;
     }
 
-    int value = cvector_iterator__next_cpy(&iterator_int);
+    int value = cvector_iterator__next(&iterator_int);
 
     assert(value == i * i);
     i++;
@@ -268,9 +290,9 @@ void test__vector_with_struct() {
       break;
     }
 
-    Node_t *node = cvector_iterator__next(&iterator_node);
-    assert(node->done == true);
-    assert(node->value == i * i);
+    Node_t node = cvector_iterator__next(&iterator_node);
+    assert(node.done == true);
+    assert(node.value == i * i);
     i++;
   }
 
@@ -295,17 +317,17 @@ void test__vector_with_list_string() {
   }
 
   {
-    char *name = cvector_iterator__next_cpy(&iterator_string);
+    char *name = cvector_iterator__next(&iterator_string);
     assert(strcmp(name, "robus") == 0);
   }
 
   {
-    char *name = cvector_iterator__next_cpy(&iterator_string);
+    char *name = cvector_iterator__next(&iterator_string);
     assert(strcmp(name, "james") == 0);
   }
 
   {
-    char *name = cvector_iterator__next_cpy(&iterator_string);
+    char *name = cvector_iterator__next(&iterator_string);
     assert(strcmp(name, "jackson") == 0);
   }
 
@@ -338,9 +360,9 @@ void test__nested_vector() {
 
   cvector__add(&vector_string, vector_char);
 
-  vector_char_t *value = cvector_iterator__next(&iterator_string);
+  vector_char_t value = cvector_iterator__next(&iterator_string);
 
-  assert(strcmp(cvector__wrapped_buffer(value), "abc") == 0);
+  assert(strcmp(cvector__wrapped_buffer(&value), "abc") == 0);
 
   cvector__free(&vector_char);
   cvector__free(&vector_string);
@@ -356,10 +378,10 @@ void test__vector_set_at_index() {
   cvector__add(&vector_int, 44);
   cvector__add(&vector_int, 45);
 
-  assert(*cvector__index(&vector_int, 1) == 45);
+  assert(cvector__index(&vector_int, 1) == 45);
 
   assert(cvector__set_at_index(&vector_int, 1, 100) == 0);
-  assert(*cvector__index(&vector_int, 1) == 100);
+  assert(cvector__index(&vector_int, 1) == 100);
 
   // attempt to set beyond bound
   assert(cvector__set_at_index(&vector_int, 12, 100) == -1);
