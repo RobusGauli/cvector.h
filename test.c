@@ -196,8 +196,6 @@ void test__vector_pop() {
     assert(cvector__size(&vector_int) == 0);
     cvector__free(&vector_int);
   }
-
-
 }
 
 void test__iterator_new() {
@@ -401,7 +399,6 @@ void test__vector_free() {
   cvector__free(&cvector_int);
   assert(cvector__wrapped_buffer(&cvector_int) == NULL);
 }
-
 
 int main() {
   // vector apis

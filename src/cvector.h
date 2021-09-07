@@ -27,8 +27,8 @@
  *
  * NOTE: First argument to 'cvector__add' or any other APIs must be address to vector i.e &vector_a.
  *
- * 'CVector(T)' will generate types during preprocessor stage from the macro to provide concrete types
- * holds the value of type 'T'.
+ * 'CVector(T)' will generate types during preprocessor stage from the macro to provide concrete
+ *types holds the value of type 'T'.
  *
  * For example: If user defines CVector(int) cvector_int_t, this will generate following type.
  *
@@ -47,13 +47,13 @@
  *   bool cvector__initialized_m;
  * } cvector_char_t;
  *
- * Here 'cvector__elem_m' [private] points to the actual buffer of data that holds value of type 'char'.
- * 'cvector__size_m' [private] keeps track of size and 'cvector__cap_m' keeps track of capacity.
- * 'cvector__initialized_m' [private] is used to determine if the initial constructor is called
- * or not.
+ * Here 'cvector__elem_m' [private] points to the actual buffer of data that holds value of type
+ *'char'. 'cvector__size_m' [private] keeps track of size and 'cvector__cap_m' keeps track of
+ *capacity. 'cvector__initialized_m' [private] is used to determine if the initial constructor is
+ *called or not.
  *
- * Initial constructor is called using 'cvector__init(&vector_a)'. This is used to set initial cap and size to 0 and.
- * buffer to 'NULL'.
+ * Initial constructor is called using 'cvector__init(&vector_a)'. This is used to set initial cap
+ *and size to 0 and. buffer to 'NULL'.
  */
 
 #ifndef cvector_h
@@ -84,16 +84,16 @@
  *  cvector__add(&cvector_double, 0.2);
  * }
  */
-#define CVector(cvector__elem_type_)                                                                                                   \
-  typedef struct {                                                                                                                     \
-    /* Pointer to buffer */ \
-    cvector__elem_type_ *cvector__elem_m;                                                                                               \
-    /* Size of Vector */ \
-    size_t cvector__size_m;                                                                                                            \
-    /* Cap of Vector */ \
-    size_t cvector__cap_m;                                                                                                             \
-    /* Flag to check whether vector is initialized or not. */ \
-    bool cvector__initialized_m;                                                                                                       \
+#define CVector(cvector__elem_type_)                                                               \
+  typedef struct {                                                                                 \
+    /* Pointer to buffer */                                                                        \
+    cvector__elem_type_ *cvector__elem_m;                                                          \
+    /* Size of Vector */                                                                           \
+    size_t cvector__size_m;                                                                        \
+    /* Cap of Vector */                                                                            \
+    size_t cvector__cap_m;                                                                         \
+    /* Flag to check whether vector is initialized or not. */                                      \
+    bool cvector__initialized_m;                                                                   \
   }
 
 /* Size should be more than or equal to shrink the vector. We won't bother
@@ -134,7 +134,6 @@
 #define cvector__initialized_(vec) ((vec)->cvector__initialized_m)
 /* PRIVATE: macro to set initialzation flag */
 #define cvector__set_initialized_(vec, flag) (cvector__initialized_(vec) = (flag))
-
 
 /* PUBLIC: macro function to initialized vector.
  *   - It sets cap to 0.
@@ -187,7 +186,6 @@
     cvector__resize_((vec), (cap));                                                                \
     cvector__set_initialized_((vec), true);                                                        \
   } while (0)
-
 
 /* PRIVATE: Resizes vector with new cap.
  * INVARIANTS:
@@ -305,9 +303,9 @@
  */
 #define CVector_iterator(cvector__type_)                                                           \
   typedef struct {                                                                                 \
-    /* Pointer to vector */ \
+    /* Pointer to vector */                                                                        \
     cvector__type_ *cvector_iterator__vec_m;                                                       \
-    /* Keep track of current index. */ \
+    /* Keep track of current index. */                                                             \
     size_t cvector_iterator__current_index_m;                                                      \
   }
 
