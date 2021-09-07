@@ -47,8 +47,8 @@ int main() {
 
   // Iterate over elements
   for (int i = 0; i < 100; i++) {
-    int* number = cvector__index(&vector_int, i);
-    printf("Number is: %d\n", *number);
+    int number = cvector__index(&vector_int, i);
+    printf("Number is: %d\n", number);
   }
 }
 ```
@@ -86,8 +86,8 @@ int main() {
   cvector_iterator__init(&iterator_int, &vector_int);
 
   // Peek the current element
-  int* number = cvector_iterator__peek(&iterator_int);
-  printf("The peeked number is: %d\n", *number);
+  int number = cvector_iterator__peek(&iterator_int);
+  printf("The peeked number is: %d\n", number);
 
   // Iterate using iterator
   for (;;) {
@@ -95,8 +95,8 @@ int main() {
       break;
     }
 
-    int* number = cvector_iterator__next(&iterator_int);
-    printf("Got number: %d\n", *number);
+    int number = cvector_iterator__next(&iterator_int);
+    printf("Got number: %d\n", number);
   }
 }
 ```
@@ -141,8 +141,8 @@ int main() {
       break;
     }
 
-    Node_t* node = cvector_iterator__next(&iterator_node);
-    printf("Node: x -> %d & y -> %d\n", node -> x, node -> y);
+    Node_t node = cvector_iterator__next(&iterator_node);
+    printf("Node: x -> %d & y -> %d\n", node.x, node.y);
   }
 }
 ```
@@ -166,15 +166,15 @@ int main() {
   // First
   {
     // Get the first element
-    int* number = cvector__first(&vector_int);
-    printf("First element: %d\n", *number);
+    int number = cvector__first(&vector_int);
+    printf("First element: %d\n", number);
   }
 
   // Last
   {
-    // Get the last element by copy
-    int number = cvector__last_cpy(&vector_int);
-    printf("Last element: %d\n", number);
+    // Get the last element by reference
+    int* number = cvector__last_ref(&vector_int);
+    printf("Last element: %d\n", *number);
   }
 
   // Pop
@@ -184,9 +184,9 @@ int main() {
     printf("Size of vector before pop: %ld\n", size_before);
 
     // Pop element from the vector
-    int* number = cvector__pop(&vector_int);
+    int number = cvector__pop(&vector_int);
 
-    printf("Popped element: %d\n", *number);
+    printf("Popped element: %d\n", number);
 
     size_t size_after = cvector__size(&vector_int);
     printf("Size of vector after pop: %ld\n", size_after);
