@@ -4,7 +4,7 @@
 
 [license-shield]: https://img.shields.io/github/license/othneildrew/Best-README-Template.svg?style=flat-square
 
-Generic & Typesafe Vector implementation in C (*~150 LOC*).
+Generic & Typesafe Vector/List implementation in C (*~150 LOC*).
 
 ## About
 
